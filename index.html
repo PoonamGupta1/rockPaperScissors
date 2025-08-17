@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rock Paper Scissors</title>
+  <style>
+    .container {
+      width: 90%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+      color: #fff;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+      text-shadow: 0px 4px 15px rgba(0, 0, 0, 0.6);
+      letter-spacing: 2px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+
+    button {
+      background: #ffffff10;
+      border: 2px solid #fff;
+      padding: 18px 28px;
+      font-size: 2.6rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #fff;
+      backdrop-filter: blur(5px);
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    button:hover {
+      background: #4facfe;
+      transform: scale(1.1);
+      box-shadow: 0px 6px 20px rgba(79, 172, 254, 0.6);
+    }
+
+    .output {
+      font-size: 1.8rem;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #ffe066;
+      text-shadow: 1px 1px 8px rgba(0, 0, 0, 0.6);
+    }
+
+    .result {
+      font-size: 1.2rem;
+      margin: 8px 0 20px;
+      font-style: italic;
+      color: #d4f1f9;
+    }
+
+    .scoreboard {
+      font-size: 1.3rem;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 18px 30px;
+      border-radius: 18px;
+      box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.5);
+      margin-bottom: 15px;
+    }
+
+    .reset-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 15px;
+      background: #ff4d4d;
+      border: none;
+      color: #fff;
+      padding: 12px 25px;
+      font-size: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .reset-btn:hover {
+      background: #cc0000;
+      transform: scale(1.05);
+    }
+
+    /* Responsive */
+    @media (min-width:200px) and (max-width: 600px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .container {
+        width: 90%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      button {
+        width: 80px;
+        height: 80px;
+        font-size: 1.5rem;
+      }
+
+      .scoreboard {
+        font-size: 1rem;
+        padding: 12px 20px;
+      }
+
+      .reset-btn {
+        height: 40px;
+      }
+
+      .output {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Rock, Paper, Scissors</h1>
+
+    <div class="buttons">
+      <button onclick="game('rock')">✊</button>
+      <button onclick="game('paper')">✋</button>
+      <button onclick="game('scissors')">✌️</button>
+    </div>
+
+    <p class="output"></p>
+    <p class="result"></p>
+
+    <div class="scoreboard">
+      <span class="wins">Wins: 0, </span>
+      <span class="lose">Losses: 0, </span>
+      <span class="tie">Ties: 0</span>
+    </div>
+
+    <button onclick="reset()" class="reset-btn">Reset</button>
+  </div>
+  <script>
+    const output = JSON.parse(localStorage.getItem('output')) || {
+      wins: 0,
+      losses: 0,
+      tie: 0
+    };
+
+    updateOutput();
+
+    function game(user) {
+      let game = ['rock', 'paper', 'scissors'];
+      let computer = game[Math.floor(Math.random() * game.length)];
+
+      if ((computer === 'rock' && user === 'paper') ||
+        (computer === 'paper' && user === 'scissors') ||
+        (computer === 'scissors' && user === 'rock')) {
+        output.wins++;
+        document.querySelector('.output').innerText = '🎉 You Win!';
+      } else if (computer === user) {
+        output.tie++;
+        document.querySelector('.output').innerText = '😐 Tie';
+      } else {
+        output.losses++;
+        document.querySelector('.output').innerText = '💀 You Lose';
+      }
+
+      document.querySelector('.result').innerText = `You: ${user} | Computer: ${computer}`;
+      localStorage.setItem('output', JSON.stringify(output));
+      updateOutput();
+    }
+
+    function reset() {
+      output.wins = 0;
+      output.losses = 0;
+      output.tie = 0;
+      localStorage.removeItem('output');
+      document.querySelector('.output').innerText = '';
+      document.querySelector('.result').innerText = '';
+      updateOutput();
+    }
+
+    function updateOutput() {
+      document.querySelector('.wins').innerText = `Wins: ${output.wins}, `;
+      document.querySelector('.lose').innerText = `Losses: ${output.losses}, `;
+      document.querySelector('.tie').innerText = `Ties: ${output.tie}`;
+    }
+  </script>
+</body>
+
+</html>
